@@ -125,7 +125,7 @@ def variable_check(parameter):
     return parameter.isidentifier() and not keyword.iskeyword(parameter)
 
 #5
-from countries_data import countries_data
+from countries_data import countries
 
 #1
 def the_most_spoken_languages(data, number):
@@ -161,3 +161,4 @@ def the_most_populated_countries(data, number):
     )
 
     return sorted_countries[:number]
+print(the_most_populated_countries(countries,1))

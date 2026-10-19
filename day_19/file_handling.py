@@ -133,3 +133,68 @@ def find_most_common_words(filename,num):
 #4
 stop_words = ['i', 'me', 'my', 'myself', 'we', 'our', 'ours', 'ourselves', 'you', "you're", "you've", "you'll", "you'd", 'your', 'yours', 'yourself', 'yourselves', 'he', 'him', 'his', 'himself', 'she', "she's", 'her', 'hers', 'herself', 'it', "it's", 'its', 'itself', 'they', 'them', 'their', 'theirs', 'themselves', 'what', 'which', 'who', 'whom', 'this', 'that', "that'll", 'these', 'those', 'am', 'is', 'are', 'was', 'were', 'be', 'been', 'being', 'have', 'has', 'had', 'having', 'do', 'does', 'did', 'doing', 'a', 'an', 'the', 'and', 'but', 'if', 'or', 'because', 'as', 'until', 'while', 'of', 'at', 'by', 'for', 'with', 'about', 'against', 'between', 'into', 'through', 'during', 'before', 'after', 'above', 'below', 'to', 'from', 'up',
               'down', 'in', 'out', 'on', 'off', 'over', 'under', 'again', 'further', 'then', 'once', 'here', 'there', 'when', 'where', 'why', 'how', 'all', 'any', 'both', 'each', 'few', 'more', 'most', 'other', 'some', 'such', 'no', 'nor', 'not', 'only', 'own', 'same', 'so', 'than', 'too', 'very', 's', 't', 'can', 'will', 'just', 'don', "don't", 'should', "should've", 'now', 'd', 'll', 'm', 'o', 're', 've', 'y', 'ain', 'aren', "aren't", 'couldn', "couldn't", 'didn', "didn't", 'doesn', "doesn't", 'hadn', "hadn't", 'hasn', "hasn't", 'haven', "haven't", 'isn', "isn't", 'ma', 'mightn', "mightn't", 'mustn', "mustn't", 'needn', "needn't", 'shan', "shan't", 'shouldn', "shouldn't", 'wasn', "wasn't", 'weren', "weren't", 'won', "won't", 'wouldn', "wouldn't"]
+def read_file(filename):
+    with open(filename,'r',encoding='utf-8')as f:
+        text=f.read()
+        return text
+def clean_text(text):
+    import re
+    text=text.lower()
+    # clean_text_lst=[]
+    all_word = re.findall(r'\b[a-z]+\b',text,re.I)
+    # for word in all_word: 
+    #     if word not in clean_text_lst:#这里可以用set去重
+    #         clean_text_lst.append(word)
+    return all_word
+def remove_support_words(text):
+    # for word in text:#一边遍历列表，一边删除列表中的元素，可能会漏掉某些元素。
+    #     if word in stop_words:#建议增加空列表
+    #         text.remove(word)
+    # return text
+    result = []
+    for word in text:
+        if word not in stop_words:
+            result.append(word)
+    return result
+'Or列表推导式'
+'return [word for word in text if word not in stop_words]'
+def check_text_similarity(text1,text2):
+    set1 = set(text1)
+    set2 = set(text2)
+    all_have_word = set1 | set2#&|是集合的运算符
+    common_word=set1&set2
+    if len(all_have_word) == 0:
+        return 0
+    similarity = len(common_word) / len(all_have_word)
+    return similarity
+michelle_text = read_file(
+    './data/michelle_obama_speech.txt'
+)
+melina_text = read_file(
+    './data/melina_trump_speech.txt'
+)
+michelle_text_clean=clean_text(michelle_text)
+melina_text_clean=clean_text(melina_text)
+michelle_text_clean_remove_stopword=remove_support_words(michelle_text_clean)
+melina_text_clean_remove_sotpword=remove_support_words(melina_text_clean)
+similarity=check_text_similarity(michelle_text_clean_remove_stopword,melina_text_clean_remove_sotpword)
+print(f"{similarity:.2}")
+#6
+import csv
+python_count = 0
+javascript_count = 0
+java_count = 0
+with open('./data/hacker_news.csv','r',encoding='tuf-8')as file:
+    csv_reader=csv.reader(f)
+    next(csv_reader, None)# 跳过表头（如果第一行是列名）
+    for row in csv_reader:
+        line = ' '.join(row).lower()
+        if 'python' in line:
+            python_count += 1
+        if 'javascript' in line:
+            javascript_count += 1
+        if 'java' in line and 'javascript' not in line:
+            java_count += 1
+print('包含 Python 的行数:', python_count)
+print('包含 JavaScript 的行数:', javascript_count)
+print('包含 Java 但不包含 JavaScript 的行数:', java_count)
